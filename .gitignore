@@ -1,14 +1,4 @@
 .DS_Store
 *~
 
-*.dylib
-*.dll
-*.so
-
-*/Windows*
-*/Linux*
-*/OSX*
-
-*.bat
-
 tools/

@@ -19,10 +19,10 @@
 -- DEALINGS IN THE SOFTWARE.
 
 function eiga.config ( o )
-  o.screen.width = 640
-  o.screen.height = 480
+  o.screen.width = 1152
+  o.screen.height = 648
   o.screen.fullscreen = false
   o.screen.vsync = false
-  o.screen.fsaa = 0
-  o.screen.title = "eiga: Immediate Mode - Triangle"
+  o.screen.fsaa = 16
+  o.screen.title = "eiga: VAO - Cube"
 end

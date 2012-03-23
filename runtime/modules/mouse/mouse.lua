@@ -18,11 +18,32 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 -- DEALINGS IN THE SOFTWARE.
 
-function eiga.config ( o )
-  o.screen.width = 640
-  o.screen.height = 480
-  o.screen.fullscreen = false
-  o.screen.vsync = false
-  o.screen.fsaa = 0
-  o.screen.title = "eiga: Immediate Mode - Triangle"
+if not eiga.mouse then eiga.mouse = {} end
+
+local glfw = eiga.alias.glfw()
+
+local ffi = require 'ffi'
+
+function eiga.mouse.init ()
+  jit.off( glfw.SetMouseButtonCallback( eiga.mouse.button_callback ) )
+  eiga.mouse.x, eiga.mouse.y = ffi.new( "int[1]" ), ffi.new( "int[1]" )
 end
+
+function eiga.mouse.button_callback ( button, state )
+  eiga.event.push(state == glfw.PRESS and "mousepressed" or
+                                          "mousereleased", button)
+end
+
+function eiga.mouse.isdown ( keycode )
+  return glfw.GetMouseButton( keycode or -1 ) == glfw.PRESS
+end
+
+function eiga.mouse.getPosition ()
+  glfw.GetMousePos( eiga.mouse.x, eiga.mouse.y )
+  return eiga.mouse.x[0], eiga.mouse.y[0]
+end
+
+function eiga.mouse.deinit ()
+end
+
+return eiga.event

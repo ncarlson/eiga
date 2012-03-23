@@ -18,8 +18,8 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 -- DEALINGS IN THE SOFTWARE.
 
-gl = eiga.alias.gl()
-glfw = eiga.alias.glfw()
+local gl = eiga.alias.gl()
+local glfw = eiga.alias.glfw()
 
 local cube_vertices = {
   back = { { .5, .5, -.5, }, { .5, -.5, -.5 }, { -.5, -.5, -.5 }, { -.5, .5, -.5 } },
@@ -32,9 +32,8 @@ local cube_vertices = {
 
 function eiga.load ( args )
   gl.Enable( gl.CULL_FACE )
-end
-
-function eiga.update ( dt )
+  gl.Enable( gl.DEPTH_TEST )
+  gl.DepthFunc( gl.LESS )
 end
 
 function eiga.draw ()
@@ -59,19 +58,10 @@ function eiga.draw ()
   gl.PopMatrix()
 end
 
-function eiga.mousepressed ( button )
-end
-
-function eiga.mousereleased ( button )
-end
-
 function eiga.keypressed ( key )
   if key == glfw.KEY_ESC then
     eiga.event.push("quit")
   end
-end
-
-function eiga.keyreleased ( key )
 end
 
 function eiga.resized ( width, height )
@@ -84,12 +74,8 @@ function eiga.resized ( width, height )
   end
 
   gl.Viewport( 0, 0, width, height )
-  gl.MatrixMode( gl.PROJECTION_MATRIX )
+  gl.MatrixMode( gl.PROJECTION )
   gl.LoadIdentity()
   perspective( 55, width / height, 0.1, 100 )
-  gl.MatrixMode( gl.MODELVIEW_MATRIX )
+  gl.MatrixMode( gl.MODELVIEW )
 end
-
-function eiga.quit()
-end
-

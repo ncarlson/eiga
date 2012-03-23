@@ -37,17 +37,27 @@ local function preload()
   local clib_ext = jit.os == "Windows" and "dll" or
                    jit.os == "OSX" and "dylib" or
                    jit.os == "Linux" and "so"
-  package.path = package.path .. ";runtime/lua/?.lua;runtime/modules/?.lua"
-  package.cpath = package.cpath .. ";runtime/"..jit.os.."/clibs/?.".. clib_ext ..";"
+
+
+  package.path = package.path .. ";ffi/?.lua"
+  package.path = package.path .. ";runtime/modules/?/?.lua"
+  package.path = package.path .. ";runtime/modules/?.lua"
+
+  package.cpath = string.format("%s;bin/%s/%s/?.%s",
+                                 package.cpath,
+                                 ffi.os,
+                                 ffi.arch,
+                                 clib_ext)
 
   local lfs = require("lfs")
   local working_directory = lfs.currentdir()
-  eiga.arg.argv0 = ffi.new("char[?]", #working_directory, working_directory)
+  eiga.arg.argv0 = ffi.new("char[?]", #working_directory+1, working_directory)
   src_dir = eiga.path.add_final_slash(
         eiga.path.normalize_slashes( working_directory .. '/' .. arg[1] )
       )
 
-  eiga.arg.c_src_dir = ffi.new("char[?]", #src_dir, src_dir)
+
+  eiga.arg.c_src_dir = ffi.new("char[?]", #src_dir+1, src_dir)
   package.path = package.path .. ";"..src_dir.."/?.lua;"..src_dir.."/?/init.lua"
 
   package.preload['eiga'] = function () end
@@ -64,7 +74,8 @@ local function preload()
     "audio",
     "sound",
     "physics",
-    "network"
+    "network",
+    "math"
   }) do
     package.preload['eiga.'..v] = function ()
       require( v )
@@ -242,6 +253,7 @@ function eiga.boot()
     glfw = require 'glfw';
     gl = require 'glewgl';
     physfs = require 'physfs';
+    soil = require 'soil';
   }
 
   do
@@ -271,6 +283,29 @@ function eiga.boot()
         local alias = {}
         setmetatable(alias, { __index = function(t, n)
           return n:find('[a-z]') and eiga.ffi.gl['glew'..n] or nil
+        end })
+        return alias
+      end;
+
+      -- gl_debug will print all opengl calls to the console and error() on
+      -- a gl-error.
+      gl_debug = function ()
+        local alias = {}
+        setmetatable(alias, { __index = function(t, n)
+          return n:find('[a-z]') and
+          ( function (...)
+            local ar = {...}
+            print(n)
+            for k,v in pairs(ar) do print("\t",k,v) end
+            local ret = eiga.ffi.gl['gl'..n]( ... )
+            local err = eiga.ffi.gl.glGetError()
+            if err ~= eiga.ffi.gl.GL_NO_ERROR then
+              error( "OpenGL Error: " .. err )
+            end
+            return ret
+          end )
+          or
+                                     eiga.ffi.gl['GL_'..n] or nil
         end })
         return alias
       end;
@@ -319,7 +354,10 @@ function eiga.init()
       alpha = 8;
       depth = 24;
       stencil = 8;
-    }
+    };
+    sleep = {
+      enabled = true
+    };
   }
 
   require 'config'
@@ -409,6 +447,7 @@ function eiga.run()
       if eiga.draw then eiga.draw() end
     end
 
+    -- Feel free to comment out the following line
     if eiga.timer then eiga.timer.sleep(0.001) end
     if eiga.graphics then eiga.graphics.present() end
   end

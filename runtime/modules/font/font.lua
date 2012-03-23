@@ -18,11 +18,6 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 -- DEALINGS IN THE SOFTWARE.
 
-function eiga.config ( o )
-  o.screen.width = 640
-  o.screen.height = 480
-  o.screen.fullscreen = false
-  o.screen.vsync = false
-  o.screen.fsaa = 0
-  o.screen.title = "eiga: Immediate Mode - Triangle"
-end
+if not eiga.font then eiga.font = {} end
+
+return eiga.font

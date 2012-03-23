@@ -1,0 +1,50 @@
+Please see /docs/legal for license information. Most of the licenses are of
+the MIT/BSD variety.
+
+The following projects have contributed to the source code:
+
+    * LOVE
+        * http://love2d.org
+        * http://bitbucket.org/rude/love/
+        - Contributed to /runtime/boot.lua
+        - Contributed to API design
+
+
+    * LUXINIA2
+        * http://github.com/CrazyButcher/luxinia2
+        - Contributed ffi header delcarations for OpenGL and GLEW
+
+
+    * UFO
+        * http://github.com/malkia/ufo
+        - Contributed ffi header declarations for GLFW
+
+
+The following projects have contributed ideas:
+
+    * HUMP
+        * http://github.com/vrld/hump
+
+    * glMatrix
+        * http://github.com/toji/gl-matrix
+
+
+Eiga uses the following libraries and binaries:
+
+    * LuaJIT
+        * http://luajit.org/
+
+    * GLFW
+        * http://www.glfw.org/
+
+    * SOIL
+        * http://www.lonesock.net/soil.html
+
+    * Physfs
+        * http://icculus.org/physfs/
+
+    * GLEW
+        * http://glew.sourceforge.net/
+
+    * LuaFileSystem
+        * http://keplerproject.github.com/luafilesystem/

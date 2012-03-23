@@ -18,30 +18,49 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 -- DEALINGS IN THE SOFTWARE.
 
+local ffi = require 'ffi'
+
 local gl = eiga.alias.gl()
 local glfw = eiga.alias.glfw()
 
+local data = {
+  position = { 10, 10, 0, 1,
+             10, 100, 0, 1,
+             100, 100, 0, 1,
+             100, 10, 0, 1  };
+  color = { 1, .1, 0, 1,
+             1, 1, 0, 1,
+             0, .1, 1, 1,
+             1, 0, 1, 1 };
+  index = { 0, 1, 2, 0, 2, 3 };
+}
+
+local mesh = eiga.graphics.newMesh( "IndexPositionColor" )
+
+local effect = eiga.graphics.newEffect( "assets/effect.vert",
+                                        "assets/effect.frag" );
+
 function eiga.load ( args )
+  gl.Enable( gl.CULL_FACE )
+  gl.Enable( gl.DEPTH_TEST )
+  gl.DepthFunc( gl.LESS )
+
+  for i=#data.position+1, 1024 do data.position[i] = 0 end
+  mesh.buffers.position:setData( data.position )
+  for i=#data.color+1, 1024 do data.color[i] = 0 end
+  mesh.buffers.color:setData( data.color )
+  mesh.buffers.index:setData( data.index )
+
+  mesh:compile( effect )
 end
 
 function eiga.update ( dt )
+  data.position[9], data.position[10] = eiga.mouse.getPosition()
+  mesh.buffers.position:setData( data.position )
 end
 
 function eiga.draw ()
-  gl.Begin( gl.TRIANGLES )
-    gl.Color3f( 1, 0, 0 )
-    gl.Vertex2f( 0, 100 )
-    gl.Color3f( 0, 1, 0 )
-    gl.Vertex2f( -100, -50 )
-    gl.Color3f( 0, 0, 1 )
-    gl.Vertex2f( 100, -50 )
-  gl.End()
-end
-
-function eiga.mousepressed ( button )
-end
-
-function eiga.mousereleased ( button )
+  mesh:draw( #data.index, effect )
 end
 
 function eiga.keypressed ( key )
@@ -50,17 +69,11 @@ function eiga.keypressed ( key )
   end
 end
 
-function eiga.keyreleased ( key )
-end
-
 function eiga.resized ( width, height )
-  gl.MatrixMode( gl.PROJECTION )
-  gl.LoadIdentity()
   gl.Viewport( 0, 0, width, height )
-  gl.Ortho( -width / 2, width / 2, -height / 2, height / 2, 0, 1 )
-  gl.MatrixMode( gl.MODELVIEW )
+  gl.MatrixMode(gl.PROJECTION)
+  gl.LoadIdentity()
+  gl.Ortho( 0, width, height, 0, 0, 1 )
+  gl.MatrixMode(gl.MODELVIEW)
+  gl.LoadIdentity()
 end
-
-function eiga.quit()
-end
-

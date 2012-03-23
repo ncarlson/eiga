@@ -18,11 +18,45 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 -- DEALINGS IN THE SOFTWARE.
 
-function eiga.config ( o )
-  o.screen.width = 640
-  o.screen.height = 480
-  o.screen.fullscreen = false
-  o.screen.vsync = false
-  o.screen.fsaa = 0
-  o.screen.title = "eiga: Immediate Mode - Triangle"
+if not eiga.filesystem then eiga.filesystem = {} end
+
+local ffi = require 'ffi'
+
+local physfs = eiga.alias.physfs()
+
+local function check_error( return_value, non_error_value, call, more )
+  if return_value ~= non_error_value then
+    local s = string.format("\n\nfilesystem.%s failed:\n\t%s\n\t%s\n", call,
+      ffi.string( physfs.getLastError() ),
+      ffi.string( more ) )
+    error( s )
+  end
 end
+
+function eiga.filesystem.init( argv0 )
+  local err = physfs.init( argv0 )
+  if err ~= 1 then
+    error( physfs.getLastError() )
+  end
+end
+
+function eiga.filesystem.set_source( c_path )
+  local err = physfs.mount( c_path, nil, 1 )
+  check_error( err, 1, "set_source", c_path )
+end
+
+function eiga.filesystem.read ( path )
+  local exists = physfs.exists( path )
+  assert( exists ~= 0 )
+  local file = physfs.openRead( path )
+  assert(file, "error")
+  local size = physfs.fileLength( file[0] )
+  assert(size ~= 0)
+  local buffer = ffi.new("char[?]", size+1)
+  local length = physfs.read( file, buffer, size, 1 )
+  assert(length ~= 0)
+  assert( physfs.close( file )  ~= 0)
+  return buffer, size
+end
+
+return eiga.filesystem

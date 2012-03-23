@@ -1,0 +1,25 @@
+# Change log
+
+## 0.0.1
+  * Basic window management
+  * Basic Mesh module which wraps a Vertex Array Object
+  * Basic texture loading
+  * Basic Effect module for utilizing vertex and fragment shaders
+  * Four examples released
+    * Immediate mode rendering of a triangle
+    * Immediate mode rendering of a cube
+    * Rendering a rectangle with one dynamic vertex. glMapBuffer is utilized.
+    * Rendering a texture-mapped cube with a vertex and fragment shader.
+        * The projection, view, and model matrix are set via glUniform.
+  * Binaries for the following platforms:
+    * Windows XP/Vista/7 32 bit
+    * Windows XP/Vista/7 64 bit
+    * Mac OSX 64 bit (Built on Xcode 4.2.1)
+    * Linux 32 bit (Built on Ubuntu 11.10)
+    * Linux 64 bit (Built on Ubuntu 11.10)
+  * Uses LuaJIT-beta9
+  * Uses the following libraries
+    * GLEW 1.7.0
+    * GLFW 2.7.4
+    * SOIL (July 7, 2008)
+    * Physfs 2.0.2

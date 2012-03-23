@@ -1,0 +1,19 @@
+Please see README.md for a brief over tutorial on running the examples.
+
+If you're on Linux or OSX, you may need to run "chmod +x" on your respective 
+luajit executable.
+
+If you're experiencing problems running the examples, please file an issue at 
+the following URL:
+
+    https://github.com/ncarlson/eiga/issues
+
+Alternatively, you can contact me directly at the following email address:
+
+    ncarlson.dev+eiga@gmail.com
+
+I can also be found on IRC as "mnus" at the following channels:
+
+    #love@irc.oftc.net
+
+    #reddit-gamedev@irc.freenode.net
