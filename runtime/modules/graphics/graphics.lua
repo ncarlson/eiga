@@ -115,7 +115,6 @@ end
 
 function eiga.graphics.newTexture ( path, near_filter, far_filter )
   local buffer, size = eiga.filesystem.read( path )
-
   local tex_2d = soil.SOIL_load_OGL_texture_from_memory(
     buffer,
     size,
